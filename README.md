@@ -1,5 +1,5 @@
 # qaaab
-wordpress filter to batch filesize &lt; 2000K
+wordpress filter to batch resize html images too less than 2M
 qaaab
 
 usage
