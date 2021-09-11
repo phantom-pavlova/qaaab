@@ -5,7 +5,7 @@ qaaab
 usage
 
 qaaab
-- 	shows jpeg images in directory with geometry, compression ratio and filesize,
+- 	shows jpeg images in directory with geometry, and filesize,
 -	asks if you want to copy all image files so that ...
 		1 - width (ie largest dimension) resized to SIZE
 		
