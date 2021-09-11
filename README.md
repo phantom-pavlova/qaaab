@@ -7,18 +7,29 @@ usage
 qaaab
 - 	shows jpeg images in directory with geometry, compression ratio and filesize,
 -	asks if you want to copy all image files so that ...
-		\t1 - width (ie largest dimension) resized to SIZE
-ni		\t2 - resize all images using the same ratio, with biggest image dimension SIZE pixels 
+		1 - width (ie largest dimension) resized to SIZE
+		
+ni		2 - resize all images using the same ratio, with biggest image dimension SIZE pixels 
+
 		3 - resize so each file is (approx) SIZE Kbytes
+		
 ni		4 - change compression ratio so each file is SIZE Kbytes
+
 ni		5 - change compression using the same ratio with biggest file < SIZE Kbytes
+
 		6 - quit
+		
 
 ni		1s - same as 1 but all subdirs are done too
+
 ni		1s - same as 1 but all subdirs are done too
+
 ni		1s - same as 1 but all subdirs are done too
+
 ni		1s - same as 1 but all subdirs are done too
+
 ni		1s - same as 1 but all subdirs are done too
+
 
 (ni = not done yet)
 
