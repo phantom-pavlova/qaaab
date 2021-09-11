@@ -3,7 +3,7 @@ options 2 4 and 5
 
 make explanation clearer
 
-github
+done - github
 
 check that resize value is diffent from current picture size 
 	- also dont resize an already batched image (exif UserComment ?)
@@ -15,6 +15,9 @@ more batch options (add subdir for all options)
 	nftw()
 
 add other image file formats - 
+see validtype.c
+
+
 as this is a wordpess filter, browser supported images makes sense, ie.
 	anpg, avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff
 	- check conversion worked
