@@ -1,6 +1,6 @@
 # qaaab
-wordpress filter to batch resize html image files to less than 2Mb
-qaaab
+wordpress filter to batch resize html image files to less than 2Mb (for now only jpg/jpeg/JPG - but 
+ avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff to be added soon)
 
 usage
 
