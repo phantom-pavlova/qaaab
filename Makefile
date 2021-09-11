@@ -1,7 +1,7 @@
 # standard Makefile:
 # SOURCES.c output from 'ls*.c'
 # TARGET is pwd
-# 'mkdir obj' -- not automatic
+# 'mkdir obj' -- not automatic - do a 'make clean' if it is not there
 # check cflags and includes 
 #  
 # bugs:
