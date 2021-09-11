@@ -67,6 +67,8 @@ jill/2.jill.jpg
 jill/3.jill.jpg
 
 .....................................
+
+
 Compiling:
 
 a 'make' should do it,
@@ -79,6 +81,8 @@ for version 6 of Imagemagick remove the comment in the makefile so 'CFLAGS += -D
 the apropriate devel packages need to be added if not present (libreadline7-devel libMagickWand-7.Q16HDRI-devel libMagickCore-7.Q16HDRI-devel)
 
 .......................................
+
+
 Running:
 
 if you put qaaab in your ~/bin/ dir, 
@@ -88,6 +92,8 @@ sudo zypper in libreadline7 libMagickWand-7.Q16HDRI libMagickCore-7.Q16HDRI
 
 
 .....................................
+
+
 missing / unfinished / features
 
 - jpeg compression not yet done
