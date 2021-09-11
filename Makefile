@@ -49,6 +49,7 @@ deps: $(SOURCES)
 	mv Makefile.t Makefile
 
 clean:
+	mkdir -p obj
 	rm -f $(TARGET) *.o $(objects)
 
 install: CFLAGS= -O2 -Wall $(shell pkg-config --cflags --libs MagickWand)
