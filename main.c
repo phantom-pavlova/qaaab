@@ -104,7 +104,7 @@ if (argc >1){
 
 if (version){
 	printf("%s %.2f\n",vname,((float)vmaj)/100);
-	printf("latest version from should be on github\n\n");
+	printf("latest version from should be on github\nhttps://github.com/phantom-pavlova/qaaab.git\n");
 	exit(r);
 	}
 
