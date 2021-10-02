@@ -6,25 +6,28 @@ if valid type found, returns length of extension (tiff=4, bmp=3, etc...)
 */
 
 #include "ourdefs.h"
-int validtype(char *filename ,char **type){
+int validtype(const char *filename ,char **type){
 // checks if extension is anpg, avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff
 // case insensitive - jpeg = JpeG
+// returns length of extension if match fount else 0, **type 'returns' extension - type is never more than 4 characters
 char str[1024];
 int r=-1;
 int i;
 // look for . and clear str
 i=1;
-while ((i<strlen(filename)) || (r==-1))
+while (r==-1)
 {
 	str[i]=0;
 	if ((filename[strlen(filename)-i]=='.')&&r==-1)
 		r=i;
 
 i++;
+if (i==strlen(filename))
+	r=-2;
 	}
 
 
-if (r!=-1)
+if (r>0) // should test filename 'abc.' or '.abc'
 {
 r--;
 for (i=0;i<r;i++)
@@ -40,9 +43,7 @@ for (i=0;i<r;i++)
 
 r=0;
 
-// there is a problem with r somewhere, should re-write this
-
-// copy srt to type
+// copy srt to type - no more than 4 characters are needed so type can always be malloced to 4 (* sizeof (char))
 strcpy(*type, str);
 
 // now check for valid types

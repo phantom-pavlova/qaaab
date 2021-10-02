@@ -1,3 +1,3 @@
 void test_wand(void);
-int validtype(char * ,char **);
+int validtype(const char * ,char **);
 

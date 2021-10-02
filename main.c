@@ -47,6 +47,7 @@ int nwidth;
 int nheight;
 char *outfile;
 FILE *io;
+FILE *testpointer;
 int use=1;
 
 int files_exist=0;
@@ -141,8 +142,7 @@ exit(0);
 if (batch)
 {
 system("find -name \"*.jpg\" | wc -l > filecount.tmp");
-system("find -name \"*.jpg\" | xargs -iRR dirname RR | sort -u | wc -l > dircount.tmp");
-
+system("find -name \"*.jpg\" | xargs -d \"\\n\" -iRR dirname RR | sort -u | wc -l > dircount.tmp");
 io=fopen("filecount.tmp","r");
 fgets( comment, 1023,io);
 fclose(io);
@@ -169,7 +169,7 @@ if (files_exist)
 i=0;
 // screen out those in */800/
 io=fopen("files.tmp","r");
-while ((fgets( comment, 8023,io) != NULL)){
+while ((fgets( comment, 1023,io) != NULL)){
 i++;
 //remove lf
 comment[strlen(comment)-1]=0;
@@ -177,13 +177,12 @@ tmpname1=strdup(comment);
 tmpname2=strdup(comment);
 batchbase=dirname(tmpname1);
 batchname=basename(tmpname2);
-
+use=1;
 if( (batchbase[strlen(batchbase)-3]=='8') &&
 	(batchbase[strlen(batchbase)-2]=='0') &&
 	(batchbase[strlen(batchbase)-1]=='0') 
 	)
 	use=0;
-
 if (use)
 	{
 	printf("\r");
@@ -203,13 +202,6 @@ else
 
 if(use){
 // do same resize as option 1 but: newdir is 800, newsize is 800 
-
-m_wand = NewMagickWand();
-
-MagickReadImage(m_wand,comment);
-width = MagickGetImageWidth(m_wand);
-height = MagickGetImageHeight(m_wand);
-
 // new filename
 strcpy(outfile,batchbase);
 strcat(outfile,"/");
@@ -223,24 +215,48 @@ strcat(outfile,".800");
 strcat(outfile,".jpg");
 //printf("        newfile is [%s]",outfile);
 
+// check outfile does not already exist (interrupt, oom error ...)
+if ((testpointer=fopen(outfile,"r"))==NULL)
+	{
 // width ?
-printf("     converting.....");
-if (width>height)
-        {
-        nwidth=800;
-        nheight=height*800/width;
-        }
-    else
-        {
-        nheight=800;
-        nwidth=width*800/height;
-        }
 
-MagickResizeImage(m_wand,nwidth,nheight,FILTER);
-MagickSetImageCompressionQuality(m_wand,95);
-MagickWriteImage(m_wand,outfile);
-DestroyMagickWand(m_wand);
-printf("written                \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\r");
+	m_wand = NewMagickWand();
+
+	MagickReadImage(m_wand,comment);
+	width = MagickGetImageWidth(m_wand);
+	height = MagickGetImageHeight(m_wand);
+	if ((width ==0)||(height == 0))
+		{
+		printf("image zero size        \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\r");	
+		}
+	else
+		{
+		printf("     converting.....");
+		if (width>height)
+	        {
+	        nwidth=800;
+	        nheight=height*800/width;
+	        }
+	    else
+	        {
+	        nheight=800;
+	        nwidth=width*800/height;
+	        }
+
+		MagickResizeImage(m_wand,nwidth,nheight,FILTER);
+		MagickSetImageCompressionQuality(m_wand,95);
+		MagickWriteImage(m_wand,outfile);
+		printf("written                \b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\r");
+		}
+	DestroyMagickWand(m_wand);
+	}
+else
+	{
+	fclose(testpointer);
+	printf(" - already done\n");
+	}
+
+
 }
 }
 remove("files.tmp");
