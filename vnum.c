@@ -1,2 +1,2 @@
-int vmaj=10;
+int vmaj=13;
 char vname[]="qaaab";

@@ -1,27 +1,35 @@
 
-options 2 4 and 5
+- think about renicing cpu-1 forks.
+
+
+* do not increase filesizes (xxx.unaltered.jpg)?? -- too complicated?
+* estimated time remaining would be helpfull
+
+
+-- < target size should be symbollic link?
+
+redo option 3 for +- 5% accuracy
+
+options 2 4 and 3
+
+watermark
+ - you will need to add a staticly linked xforms window here 
+ - - so user can try out different styles
+ - test it is static by deleting 
+ - - libforms.so.2
+ - - libXpm.so.4
+
+mention download site in Readme for compiling
+use make static for distribution
 
 make explanation clearer
 
-done - github
-
-check that resize value is diffent from current picture size 
-	- also dont resize an already batched image (exif UserComment ?)
-
 parellise if > 1 CPU
  - dir with 3500 ~2M pix took 10 mins to stat!
+- some sort of cache will be very helpful
 
 more batch options (add subdir for all options)
-	nftw()
-
-add other image file formats - 
-see validtype.c
-
-
-as this is a wordpess filter, browser supported images makes sense, ie.
-	anpg, avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff
-	- check conversion worked
-
+	nftw() - problematic if you write or mkdir 
 
 gtk+ interface?
 
@@ -29,7 +37,11 @@ make more rodent traps
 
 separate calls / rewrite more logically
 
+check -Wall warnings (only seen on make install)
+
 caca option
+
+cache time expensive info or 'do not use' dir in a .qaaab file
 
 buy uk keyboard
 
@@ -38,5 +50,36 @@ check free(), or use garbage collection
 add french?? (from environment $LANG) / other languages
 
 
+-------------------------done--------------------
+
+
+github
+
+add other image file formats - 
+as this is a wordpess filter, browser supported images makes sense, ie.
+	anpg, avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff
+	- check conversion worked
+
+
+check that resize value is diffent from current picture size 
+	- also dont resize an already batched image (exif UserComment ?)
+
+-- tests for JPG and jpg etc
+-- progress meter
+-- nonbatch check file does not exists
+* do not redo files already batched (ie when program dies or is stopped - name check is sufficient)
+
+why are we loosing includes?? - frenck kbd?? no cc -E instead of cc -E 'pkg-config --cflags --libs MagickWand'
+
+
+nftw() is not happy if you create directories, while it is walking.
+so maybe, 
+add all the valid  image files to a resizeable array,
+a[0][0]=xx/yy.jpg
+a[0][1]=xx/800
+a[0][2]=xx/800/yy.800.jpg
+a[1][0]=xx/yy.jpg
+
+ then process  each.
 
 

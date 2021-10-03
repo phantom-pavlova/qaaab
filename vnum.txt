@@ -1,6 +1,6 @@
-# version before backup was was 9.0
+# version before backup was was 12.0
 # major number 
-10:x
-## major update to 10
-#some minor fixes
+13:x
+## major update to 13
+#sort of working, no watermarks yet, nor parallelism
 

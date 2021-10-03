@@ -43,6 +43,8 @@ for (i=0;i<r;i++)
 
 r=0;
 
+// there is a problem with r somewhere, should re-write this
+
 // copy srt to type - no more than 4 characters are needed so type can always be malloced to 4 (* sizeof (char))
 strcpy(*type, str);
 
@@ -82,6 +84,16 @@ if (strncmp(str,"webp",4)==0)
 if (strncmp(str,"tiff",4)==0)
 	r=4;
 }
+
+
+// so we have a match but it may have been changed to lowercase so..
+// actually JPG fails, but jpg is ok - should flag this and rename, maybe one day...
+/*
+for (i=1;i<r;i++)
+*type[strlen(*type)-i]=filename[strlen(filename)-i];
+printf("-val-%s-val-",*type);
+*/
+
 }
 else
 	r=0;
