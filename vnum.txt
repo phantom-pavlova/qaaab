@@ -1,6 +1,6 @@
-# version before backup was was 12.0
+# version before backup was was 13.0
 # major number 
-13:x
-## major update to 13
-#sort of working, no watermarks yet, nor parallelism
+14:x
+## major update to 14
+#presentaion, default for all is 1024
 

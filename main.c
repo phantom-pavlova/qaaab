@@ -280,7 +280,7 @@ while ((i%10)!=0)
 	printf("\n");
 	}
 
-printf("\n\n\nall done\n");
+printf("\n\nall done\n\n");
 
 if (files_exist)
     MagickWandTerminus();
@@ -398,8 +398,8 @@ if ((atoi(comment)==6)||(comment[0]=='q'))
 if (atoi(comment)==5)
 {
 choice=5|8;
-newsize=800;
-strcpy(newdir,"800");
+newsize=1024;
+strcpy(newdir,"1024");
 }
 else
 {

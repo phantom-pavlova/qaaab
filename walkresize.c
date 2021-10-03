@@ -47,9 +47,9 @@ if (flag == FTW_F)
     if ((filesdone%10)==0)
 	    printf("\033[10A"); // go up 10 lines
 	printf("%c[2K", 27);
-	printf("%i of %i:%s   ",filesdone++,filestoprocess,outfile);
+	printf("%i of %i:%s   ",filesdone++,filestoprocess-1,outfile);
 	if (filestoprocess<filesdone) 
-		filesdone=filestoprocess;
+		filestoprocess=filesdone;
 
 	if ((testpointer=fopen(outfile,"r"))==NULL)
 	    {
@@ -89,7 +89,18 @@ if (flag == FTW_F)
         }
 	}
 
-//	else
+	else
+	{
+    if ((filesdone%10)==0)
+	    printf("\033[10A"); // go up 10 lines
+	
+	printf("%c[2K", 27);
+	printf("%i of %i:%s   ",filesdone++,filestoprocess-1,outfile);
+	if (filestoprocess<filesdone) 
+		filestoprocess=filesdone;
+	
+	printf(" - ignoring \n");
+	}
 //		printf (" - wrong name\r");
 }
 }

@@ -66,8 +66,8 @@ install: all
 install: 
 	cp $(TARGET) ~/bin/
 
-static: # static build for distribution ie to machines without xforms libraries 
-	CFLAGS= -Wl,-Bstatic -Wl,-Bdynamic -lpthread -lm -lX11
+static: # static build for distribution ie to machines without libraries - work in progress
+	CFLAGS= -Wl,-Bstatic -Wl,-Bdynamic -lpthread -lm -lX11 $(shell pkg-config --cflags --static MagickWand)
 static: clean
 static: all
 
