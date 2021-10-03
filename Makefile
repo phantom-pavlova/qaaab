@@ -71,8 +71,7 @@ static: # static build for distribution ie to machines without xforms libraries
 static: clean
 static: all
 
-samples: # make a dir called samples, fill it with assorted images for testing
-	FORCE
+samples: FORCE # make a dir called samples, fill it with assorted images for testing
 	mkdir -p samples 
 	-locate -l 300 .jpg | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/
 	-locate -l 300 .JPG | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/
