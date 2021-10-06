@@ -1,0 +1,51 @@
+ok, the ideal is that nftw works, and is parallel.
+however neither is the case.
+furthermore it would seem that nftw is not even safe to update a global
+
+options
+- write dftw 
+ - use nftw and hope for the best
+
+
+well I imagine that, as life is a combination of pragmatic and idealistic it will have to be both.
+
+it seems that nftw can write to globals, though maybe should replace with other ways (what ways)
+so we use nftw just to log filenames, which are then sent to a dispatcher
+
+nftw - ok for file manip - but does return spuriuos(?) files 
+	- do not touch the internal structures
+	- do not malloc
+
+
+so
+use (n)ftw for walk
+ - count files and dirs, 
+return
+
+
+ - malloc arrays
+use (n)ftw for walk
+ - write their names
+return
+
+then use a file or shared memory based dispatcher to
+ do the tasks
+ +fork according to mem and CPUs available
+
+ - dispatcher watches forks, and gives orders (according to load?)
+ - forks do what they are told, return when everything is done.
+
+- wow, if the program finished, a buggy fork may still be running. exit (from main) does not clean up children!
+- so if your system becomes very slow.......
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 
-- think about renicing cpu-1 forks.
+- think about renicing.
 
+why do batch and auto treat .JPG differently to .jpg ?
 
 * do not increase filesizes (xxx.unaltered.jpg)?? -- too complicated?
 * estimated time remaining would be helpfull
@@ -20,13 +21,18 @@ watermark
  - - libXpm.so.4
 
 mention download site in Readme for compiling
-use make static for distribution
+use make static for distribution (needs fixing + testing)
 
 make explanation clearer
 
 parellise if > 1 CPU
  - dir with 3500 ~2M pix took 10 mins to stat!
 - some sort of cache will be very helpful
+- the thing to do is just use nftw to get list of valid image files
+ - then create the subdirs
+ - then make a list of infile/outfile pairs 
+ - then start forking (limit mem + cpu maybe with cgroups maybe just limit CPUs 
+			+ check for swap action(/proc/meminfo - VmallocUsed:       41036 kB))
 
 more batch options (add subdir for all options)
 	nftw() - problematic if you write or mkdir 
@@ -35,13 +41,13 @@ gtk+ interface?
 
 make more rodent traps
 
-separate calls / rewrite more logically
+separate calls / rewrite more logically / remove commented out code
+move the for ... if ... chkn+=(2<<j); to 
+	int samesuffix(char*,char*)
 
 check -Wall warnings (only seen on make install)
 
 caca option
-
-cache time expensive info or 'do not use' dir in a .qaaab file
 
 buy uk keyboard
 

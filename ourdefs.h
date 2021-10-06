@@ -24,7 +24,7 @@
 #include <termios.h>
 #include <MagickWand/MagickWand.h>
 #define FILTER LanczosFilter
-
+#define BUFFER 65535
 #include "prototypes.h"
 #include "globals.h"
 

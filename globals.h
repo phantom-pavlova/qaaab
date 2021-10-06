@@ -26,4 +26,11 @@ ASSIGN int walkflag;
 ASSIGN int dirstomake;
 ASSIGN int filestoprocess;
 ASSIGN int filesdone;
+ASSIGN int linemax;
 ASSIGN char **dirlist;
+ASSIGN char **filelist;
+
+ASSIGN int cpus;
+
+
+

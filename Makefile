@@ -51,13 +51,17 @@ help: # Print help on Makefile
 deps: # redo dependencies  
 	$(SOURCES)
 	grep -n $(TOKEN) Makefile | cut -d: -f1 | tail -n1 | xargs -iRR head -n RR Makefile > Makefile.t
-	@cc -MM $(SOURCES.c) | xargs -iRR echo xnewlinexRR | tr -d '\n' | sed 's|xnewlinex|\nobj/|g' >> Makefile.t
+	cc -MM $(SOURCES.c) | xargs -iRR echo xnewlinexRR | tr -d '\n' | sed 's|xnewlinex|\nobj/|g' >> Makefile.t
 	@echo >> Makefile.t
 	mv Makefile.t Makefile
 
 clean: # for new target machine
+	@echo making dependencies (deps), creating obj dir, removing old files and dirs (samples) 
+clean: deps 
 	mkdir -p $(OBJDIR)
 	rm -f $(TARGET) *.o $(objects)
+	rm -rf samples
+# for when you work on usb drives
 	sync
 
 install: CFLAGS= -O2 -Wall $(shell pkg-config --cflags --libs MagickWand)
@@ -72,10 +76,16 @@ static: clean
 static: all
 
 samples: FORCE # make a dir called samples, fill it with assorted images for testing
-	mkdir -p samples 
+	mkdir -p samples samples/aaa samples/bbb
 	-locate -l 300 .jpg | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/
-	-locate -l 300 .JPG | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/
-	-locate -l 300 .png | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/
+	-locate -l 300 .JPG | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/aaa
+	-locate -l 300 .png | sort -R --random-source=/dev/urandom | tail -n 30 | xargs -d "\n" -iRR cp RR samples/bbb
+
+bigsamples: FORCE # make a dir called samples, fill it with lots and lots of assorted images for testing
+	mkdir -p samples samples/aaa samples/bbb
+	-locate -l 3000 .jpg | sort -R --random-source=/dev/urandom | tail -n 2000 | xargs -d "\n" -iRR cp RR samples/
+	-locate -l 3000 .JPG | sort -R --random-source=/dev/urandom | tail -n 1500 | xargs -d "\n" -iRR cp RR samples/aaa
+	-locate -l 3000 .png | sort -R --random-source=/dev/urandom | tail -n 1000 | xargs -d "\n" -iRR cp RR samples/bbb
 
 FORCE: ;
 
@@ -87,6 +97,8 @@ test: # for trial end error makefile modifications
 
 #deps begin
 
+obj/alreadythere.o: alreadythere.c ourdefs.h prototypes.h globals.h
+obj/core.o: core.c ourdefs.h prototypes.h globals.h
 obj/main.o: main.c ourdefs.h prototypes.h globals.h vnum.c
 obj/validtype.o: validtype.c ourdefs.h prototypes.h globals.h
 obj/vnum.o: vnum.c

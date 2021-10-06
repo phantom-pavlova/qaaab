@@ -1,6 +1,6 @@
-# version before backup was was 13.0
+# version before backup was was 16.0
 # major number 
-14:x
-## major update to 14
-#presentaion, default for all is 1024
+17:x
+## major update to 17
+#ok ipc woorking better, most niggles removed, need to sort declarations, and minimise printfs
 

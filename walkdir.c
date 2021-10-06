@@ -28,24 +28,15 @@ if (flag == FTW_F)
     {
 if (validtype(name ,&type))
 {
+
+strcpy(filelist[filestoprocess++],file);
 strcpy(dupfile,file);
 strcpy(duppath,dirname(dupfile));
-//filestoprocess++;
-// is image - counter++
-//if (strcmp(duppath,oldname)!=0)
-//	printf("change - ");
-//else
-//	printf("         ");
 
-
-//printf("dir is %s : %s\n",duppath,oldname);
-// have we saved basename
 if (strcmp(duppath,oldname)!=0)
 {
 dirstomake++;
-//dirlist=realloc(dirlist,dirstomake*sizeof(char *));
 strcpy(dirlist[dirstomake-1],duppath);
-//printf("%s\n",duppath);
 strcpy(oldname,duppath);
 }
 

@@ -29,14 +29,12 @@ int main(int argc,char *argv[]){
 #include "vnum.c"
 int r=0;
 int i;
-int stat=0;
 int help=0;
 int version=0;
 int batch=0;
 char ar;
-DIR *folder;
-struct dirent *entry;
-int files = 0;
+//DIR *folder;
+//struct dirent *entry;
 char *comment;
 FILE *io;
 int use=1;
@@ -47,15 +45,9 @@ char *batchbase;
 char *batchname;
 char *tmpname1;
 char *tmpname2;
-long int totalsize=0;
-int largestfile=0;
-int maxwidth=0;
-int f_d = 0; 
-struct stat st; 
+//struct stat st; 
 
 
-float ratio;
-float x,y;
 time_t t;
 //m_wand = NULL;
 
@@ -75,15 +67,17 @@ strcpy(oldname,"owlerror");
 // seed random number generator
 srand((unsigned) time(&t));
 
+
+char *parsestring;
+
+nice(1); // do not completely block system
+
 // process args if any
 if (argc >1){
 	ar=0;
 	for (i=0; i< strlen(argv[1]) ; i++)
 		if ( isalpha(argv[1][i]) && (ar==0) ) 
 			ar=argv[1][i];
-
-	if (ar=='s') 
-		stat=1;
 
 	if (ar=='h') 
 		help=1;
@@ -94,6 +88,40 @@ if (argc >1){
 	if (ar=='b') 
 		batch=1;
 	}
+
+
+cpus=0;
+//processor	: 3
+if((io=fopen("/proc/cpuinfo","r"))==NULL)
+	{
+	printf("couldn't open /proc/cpuinfo\n");
+	exit(0);
+	}
+else
+	{
+	while ((fgets( comment, 1023,io) != NULL))
+		{
+		if (strncmp(comment,"processor",9)==0)
+			{
+			for (i=0;i<strlen(comment);i++)
+				if (comment[i]==':')
+					parsestring=comment+(i+1)*sizeof(char);
+	
+			cpus=atoi(parsestring);
+			}
+	
+		}
+	if (cpus==0) 
+		cpus=1;
+	
+	if (batch)
+		printf("\nsimple batch using 1 CPU\n");
+	else
+		printf("\nusing %i CPUi(s)\n",cpus);
+
+	}
+
+
 
 
 if (version){
@@ -110,10 +138,6 @@ if (help){
 
 	printf("%s help\n",vname);
 	printf("\t this message\n");
-	printf("\n");
-
-	printf("%s stat\n",vname);
-	printf("\t shows stats on jpg files in current directory\n");
 	printf("\n");
 
 	printf("%s version\n",vname);
@@ -214,7 +238,7 @@ strcat(outfile,batchname);
 outfile[strlen(outfile)-4]=0;
 strcat(outfile,".1024");
 strcat(outfile,".jpg");
-//terrible fix but..
+//terrible fix but ... seems to work!
 outfile[strlen(outfile)-1]=comment[strlen(comment)-1];
 outfile[strlen(outfile)-2]=comment[strlen(comment)-2];
 outfile[strlen(outfile)-3]=comment[strlen(comment)-3];
@@ -294,90 +318,6 @@ printf("\n");
 
 
 
-// pre read - maybe get rid of this 
-
-#ifdef COMPILE_OLD_CODE
-
-folder = opendir(".");
-if(folder == NULL) {
-	perror("Unable to read directory");
-	return(1);
-	}
-
-while( (entry=readdir(folder)) ) {
-//int isaj=0;
-// is file? is it a jpg
-if(
-	(entry->d_type==DT_REG) &&
-	(
-	  ( (entry->d_name[strlen(entry->d_name)-3]=='j') &&
-		(entry->d_name[strlen(entry->d_name)-2]=='p') &&
-		(entry->d_name[strlen(entry->d_name)-1]=='g') )
-	  ||
-	  ( (entry->d_name[strlen(entry->d_name)-3]=='J') &&
-		(entry->d_name[strlen(entry->d_name)-2]=='P') &&
-		(entry->d_name[strlen(entry->d_name)-1]=='G') )
-	)
-  )
-
-
-
-{
-
-
-files++;
-// get filesize
-f_d = open(entry->d_name,O_RDONLY);
-if(-1 == f_d) 
-    { 
-        printf("\n NULL File descriptor\n"); 
-        return -1; 
-    } 
-if(fstat(f_d, &st)) 
-    { 
-        printf("\nfstat error: [%s]\n",strerror(errno)); 
-        close(f_d); 
-        return -1; 
-    } 
-
-close(f_d); 
-// get pic details
-MagickWandGenesis();
-
-m_wand = NewMagickWand();
-
-MagickReadImage(m_wand,entry->d_name);
-width = MagickGetImageWidth(m_wand);
-height = MagickGetImageHeight(m_wand);
-
-if (m_wand)
-	m_wand = DestroyMagickWand(m_wand);
-
-MagickWandTerminus();
-
-
-printf("\r");
-printf("%c[2K", 27);
-
-printf("%s \t%li K bytes  \t\t%i x \t%i\r", entry->d_name, st.st_size/1024, width,height);
-totalsize+=(long int)(st.st_size/1024);
-if (width>maxwidth)
-	maxwidth=width;
-
-if (height>maxwidth)
-	maxwidth=height;
-if (st.st_size>largestfile) largestfile=st.st_size;
-}
-}
-
-closedir(folder);
-printf("\n\nfound %i jpg files\n",files);
-printf("\ttotal size %li K,\n",totalsize);
-printf("\tmax image dimension is %i,\n",maxwidth); 
-printf("\tbiggest file is %i K.\n",largestfile/1024); 
-#endif
-
-
 //if (stat || (files==0))
 //	exit(0);
 
@@ -437,26 +377,24 @@ printf("using %s, %i %s\n",newdir,newsize,comment);
 printf("hit a key to go or \"q\" to abort\n");
 
 
-
+// oh how easy inkey$ was in the olden days...
 struct termios info;
+tcgetattr(0, &info);          	/* get current terminal attirbutes; 0 is the file descriptor for stdin */
 int tc1=info.c_cc[VMIN];
 int tc2=info.c_cc[VTIME];
-tcgetattr(0, &info);          /* get current terminal attirbutes; 0 is the file descriptor for stdin */
-info.c_lflag &= ~ICANON;      /* disable canonical mode */
-info.c_cc[VMIN] = 1;          /* wait until at least one keystroke available */
-info.c_cc[VTIME] = 0;         /* no timeout */
-tcsetattr(0, TCSANOW, &info); /* set immediately */
+info.c_lflag &= ~ICANON;      	/* disable canonical mode */
+info.c_cc[VMIN] = 1;          	/* wait until at least one keystroke available */
+info.c_cc[VTIME] = 0;     		/* no timeout */
+tcsetattr(0, TCSANOW, &info); 	/* set immediately */
 
-
-
-char waitc = getchar();
+char waitc = getchar();			/* now this finishes on any keypress */	
 if ((waitc=='q')||(waitc=='Q'))
 	exit(0);
 
 info.c_cc[VTIME]=tc2;
 info.c_cc[VMIN]=tc1;
 info.c_lflag |= ICANON;
-tcsetattr(0, TCSANOW, &info);
+tcsetattr(0, TCSANOW, &info); 	/* put back old values */
 printf("\n");
 
 
@@ -467,7 +405,7 @@ printf("\n");
 //int c, nfds;
 int errors = 0;
 int flags = FTW_PHYS | FTW_CHDIR | FTW_DEPTH;
-char start[PATH_MAX], finish[PATH_MAX];
+//char start[PATH_MAX], finish[PATH_MAX];
 
 //nfds = getdtablesize() - SPARE_FDS; /* leave some spare descriptors */
 
@@ -476,6 +414,7 @@ getcwd(dname,4095);
 filesdone=0;
 filestoprocess=0;
 walkflag=1;
+linemax=0;
 printf("Examining directories ........\n");
 if (nftw(dname, walkexamine, 15, flags) != 0)
         {
@@ -484,13 +423,17 @@ if (nftw(dname, walkexamine, 15, flags) != 0)
         }
 printf("found %i image files\n",filestoprocess);
 printf("in %i directories,\n",dirstomake);
-printf("\n\ncreating new directories........\n");
 // mallocing in nftw affects nftw's structures - go figure...
+printf("reserving memory (%i)(%i)......\n",dirstomake*4096,filestoprocess*(linemax+2));
 dirlist=malloc(dirstomake*sizeof(char *));
 for (i=0;i<dirstomake;i++)
 	dirlist[i]=malloc(4096*sizeof(char));
+filelist=malloc(filestoprocess*sizeof(char *));
+for (i=0;i<filestoprocess;i++)
+	filelist[i]=malloc((linemax+2)*sizeof(char));
 //this time get their names
 dirstomake=0;
+filestoprocess=0;
 if (nftw(dname, walkdir, 15, flags) != 0)
         {
         fprintf(stderr, "nftw(): stopped early\n");
@@ -499,6 +442,7 @@ if (nftw(dname, walkdir, 15, flags) != 0)
 
 printf("got names......\n");
 
+//printf("\n\ncreating new directories........\n");
 for (i=0;i<dirstomake;i++)
 	{
 // if dirlist[i] already end with newdir, dont add it
@@ -520,161 +464,15 @@ int j;
 
 
 
-printf("processing files ........\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//printf("processing files ........\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
+core();
 
-if (nftw(dname, walkresize, 15, flags) != 0)
-        {
-        fprintf(stderr, "nftw(): stopped early\n");
-        errors++;
-        }
-
-
-while(((filesdone++)%10)!=0)
-	printf("\n");
-
-printf("ftw() finished\n");
+printf("\n finished\n\n");
 
 
 
-
-
-
-/*
-r=mkdir(newdir,S_IRWXU|S_IRWXG|S_IRWXO);
-
-// second pass
-f_d = 0; 
-
-folder = opendir(".");
-
-while( (entry=readdir(folder)) ) {
-//int isaj=0;
-// is file? is it a jpg
-if((entry->d_type==DT_REG) &&
-(entry->d_name[strlen(entry->d_name)-3]=='j') &&
-(entry->d_name[strlen(entry->d_name)-2]=='p') &&
-(entry->d_name[strlen(entry->d_name)-1]=='g') )
-{
-
-
-files++;
-// get filesize
-f_d = open(entry->d_name,O_RDONLY);
-if(-1 == f_d) 
-    { 
-        printf("\n NULL File descriptor\n"); 
-        return -1; 
-    } 
-if(fstat(f_d, &st)) 
-    { 
-        printf("\nfstat error: [%s]\n",strerror(errno)); 
-        close(f_d); 
-        return -1; 
-    } 
-
-close(f_d); 
-// get pic details
-MagickWandGenesis();
-
-m_wand = NewMagickWand();
-
-MagickReadImage(m_wand,entry->d_name);
-width = MagickGetImageWidth(m_wand);
-height = MagickGetImageHeight(m_wand);
-// manip goes here
-
-// new filename
-strcpy(outfile,newdir);
-strcat(outfile,"/");
-strcat(outfile,entry->d_name);
-outfile[strlen(outfile)-3]=0;
-strcat(outfile,newdir);
-strcat(outfile,".jpg");
-printf("newfile is [%s]\n",outfile);
-int wrote=0;
-// width ?
-if(choice=='1'){
-printf("converting.....");	
-if (width>height)
-		{
-		nwidth=newsize;
-		nheight=height*newsize/width;
-		}
-	else
-		{
-		nheight=newsize;
-		nwidth=width*newsize/height;
-		}
-
-MagickResizeImage(m_wand,nwidth,nheight,FILTER);
-MagickSetImageCompressionQuality(m_wand,95);
-if(MagickWriteImage(m_wand,outfile)==MagickFalse)
-	printf("failed\n");
-else
-	{
-	printf("written\n");
-	wrote=1;
-	}
-
-}
-// resize to filesize
-if(choice=='3'){
-printf("converting.....");
-
-// height width st.st_size newsize(k)
-
-//
-//this is a bit aproximate, but needs only one write, better is:
-//set compression to 95,
-//get pic size
-//resize pic to width*newsize/stsize 
-//get pic size
-//do a log/log interpolation for actual size
-//- takes 3 times longer but would be much more accurate (maybe give option fast-approx or 3xslower-quite-accurate)
-//problem is that jpegs compress according to content 
-
-
-x=(float)newsize;
-x*=1000;
-y=(float)st.st_size;
-ratio=y/x;
-ratio=sqrt(ratio);
-ratio=sqrt(ratio);
-x=(float)width;
-y=(float)height;
-x=x/ratio;
-y=y/ratio;
-nwidth=(int)x;
-nheight=(int)y;
-
-printf(" [%f] %i x %i -> %i x %i .......",ratio,width,height,nwidth,nheight);
-
-MagickResizeImage(m_wand,nwidth,nheight,FILTER);
-MagickSetImageCompressionQuality(m_wand,95);
-if (MagickWriteImage(m_wand,outfile)==MagickFalse)
-	printf("failed\n");
-else
-	{
-	printf("written\n");
-	wrote=1;
-	}
-
-}
-
-if (m_wand)
-	m_wand = DestroyMagickWand(m_wand);
-
-MagickWandTerminus();
-
-
-
-}
-}
-
-closedir(folder);
 // gcc is great, but nested comments would be nice
-*/
 return (r);
 }
 

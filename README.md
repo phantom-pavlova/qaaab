@@ -1,3 +1,8 @@
+this is a linux console program that resizes all the image files that can be used in html
+work either in current directory, or all subdirs.
+will normally use all available CPUs.
+...............................
+
 qaaab
 
 usage
@@ -8,16 +13,13 @@ qaaab
 ni		2 - resize all images using the same ratio, with biggest image dimension SIZE pixels 
 		3 - resize so each file is (approx) SIZE Kbytes
 ni		4 - change compression ratio so each file is SIZE Kbytes
-		5 - like choice 1 but size is 800 - does subdirs 
+		5 - like choice 1 but size is 1024 - does subdirs 
 		6 - quit
 ni = not done yet)
 
 if 1-5 entered, you will be prompted for a NAME and SIZE
 then subdir created, and progress of conversion shown
 maybe do subdirectories as well
-
-qaaab stat
-- just shows geometry, compression ratio and filesize of jpegs, then exits.
 
 
 qaaab help
@@ -30,7 +32,7 @@ qaaab version
 
 
 qaaab batch
-- width (ie largest dimension) resized to 800, for current and subdirectories, NAME is always 800
+- width (ie largest dimension) resized to 1024, for current and subdirectories, only jpg + png, only one cpu
 
 
 
@@ -49,6 +51,7 @@ for version 6 of Imagemagick remove the comment in the makefile so 'CFLAGS += -D
 the apropriate devel packages need to be added if not present (libreadline7-devel libMagickWand-7.Q16HDRI-devel libMagickCore-7.Q16HDRI-devel)
 early versions used the xforms library
 
+the Makefile takes the directory name for the program name.
 .......................................
 Running:
 
@@ -61,8 +64,7 @@ sudo zypper in libreadline7 libMagickWand-7.Q16HDRI libMagickCore-7.Q16HDRI
 .....................................
 missing / unfinished / features
 
-- jpeg compression not yet done
-- resize width/height for target filesize is approximate, may be improved shortly
+- watermark
 - feedback to github may result in added features, or other improvements
 - gui not really planned as it takes a while and they always seem to change, if EVERYONE asks for it I may do.
  
