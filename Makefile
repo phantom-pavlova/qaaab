@@ -104,4 +104,3 @@ obj/validtype.o: validtype.c ourdefs.h prototypes.h globals.h
 obj/vnum.o: vnum.c
 obj/walkdir.o: walkdir.c ourdefs.h prototypes.h globals.h
 obj/walkexamine.o: walkexamine.c ourdefs.h prototypes.h globals.h
-obj/walkresize.o: walkresize.c ourdefs.h prototypes.h globals.h

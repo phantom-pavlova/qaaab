@@ -1,6 +1,5 @@
 
-
-options 2 4 and 3
+crop dir search
 
 write an empty .qaaab file in output dir, then remove from list everything in those directories
 
@@ -30,8 +29,6 @@ check -Wall warnings (only seen on make install)
 caca option
 
 buy uk keyboard
-
-check free(), or use garbage collection
 
 add french?? (from environment $LANG) / other languages
 
@@ -89,5 +86,12 @@ parellise if > 1 CPU
 * do not increase filesizes (xxx.unaltered.jpg)?? -- too complicated?
 * estimated time remaining would be helpfull
 	- actually used files done/ignored/total
+
+
+check free(), or use garbage collection
+
+close file descriptors in core.c
+ - also a few nanosleeps 
+
 
 

@@ -28,21 +28,32 @@ pid_t pids[cpus];
 pid_t wpid;
 int tochildfd[cpus][2];
 int toparentfd[cpus][2];
+int childcounter;
 
 int height, width;
 int nheight, nwidth;
+
+// nanosleep does not work on old (2.x) kernels
+struct timespec ctim, ctim2;
+struct timespec ptim, ptim2;
+ctim.tv_sec  = 0;
+ctim.tv_nsec = 5000L;
+ptim.tv_sec  = 0;
+ptim.tv_nsec = 500000L;
+
 //MagickWand *magick_wand;
 // locals declared ...
 
 //cpus = 1;
 
-hillary = malloc (255);
+hillary = malloc (1024);
 string = malloc (BUFFER);
+childcounter=0;
 
 //mainly for parent
 for (i = 0; i < BUFFER; i++)
 	infile[i] = 0;
-
+	
 
 for (i = 0; i < cpus; i++)
 	if (pipe (tochildfd[i]) < 0)
@@ -50,6 +61,7 @@ for (i = 0; i < cpus; i++)
 		printf ("pipe error\n");
 		exit (1);
 		}
+
 
 for (i = 0; i < cpus; i++)
 	if (pipe (toparentfd[i]) < 0)
@@ -68,17 +80,37 @@ if ((pids[i] = fork ()) < 0)
 else if (pids[i] == 0)
 	{
 	/* child */
+
+	for (j = 0; j < cpus; j++)
+		{
+		close(tochildfd[j][1]);
+		close(toparentfd[j][0]);
+		if (j!=i)
+			{
+			close(tochildfd[j][0]);
+			close(toparentfd[j][1]);
+			}
+		}
+
 //	printf ("child %i active...\n", i);
-	MagickWandGenesis ();
+	MagickWandGenesis();
 	while (1)
 		{
+		childcounter++;
+		// clean up from time to time
+		if ((childcounter%100)==27)
+			{
+			MagickWandTerminus();
+			MagickWandGenesis();
+			}
+
 		// wait for signal
 		for (j = 0; j < BUFFER; j++)
 			infile[j] = 0;
 		flag=0;
 
 		while (read (tochildfd[i][0], infile, BUFFER) == 0)
-				;
+				nanosleep(&ctim , &ctim2);
 
 		if (strncmp (infile, "stop", 4) == 0)	// all done
 			{
@@ -106,7 +138,7 @@ else if (pids[i] == 0)
 			string = strdup (infile);
 			strcat (outfile, basename (string));
 			string = strdup (infile);
-			outfile[strlen (outfile) - validtype (string, &hillary)] = 0;
+			outfile[strlen (outfile) - validtype (string, &hillary,1)] = 0;
 			strcat (outfile, newdir);
 			strcat (outfile, ".");
 			strcat (outfile, hillary);
@@ -175,6 +207,7 @@ else if (pids[i] == 0)
 //						printf ("\n");
 						}
 					}
+				if(m_wand) m_wand = DestroyMagickWand(m_wand);
 				}			// end of file exists
 			}
 		// tell parent we are done.
@@ -185,17 +218,22 @@ else if (pids[i] == 0)
 		else
 			write (toparentfd[i][1], "failed", 6);
 		}
-	MagickWandTerminus ();
+	MagickWandTerminus();
 	}
 
 }
 
-
-
 /* parent */
 // you could let user up + down CPUs from here
 
-printf ("I am parent \n");
+for (j = 0; j < cpus; j++)
+	{
+	close(tochildfd[j][0]);
+	close(toparentfd[j][1]);
+	}
+
+
+printf ("I am the parent \n");
 
 //int flag = (2 << (cpus + 1)) - 1;	//  ??
 counter = 0;
@@ -213,6 +251,7 @@ for (i = 0; i < cpus; i++)
 i = 0;
 while (counter < (filestoprocess + cpus))
 	{
+	nanosleep(&ptim , &ptim2);
 	// check for children done
 	if ((k=read (toparentfd[i][0], infile, BUFFER)) != 0)
 	// more to do ? send another 
@@ -247,6 +286,9 @@ printf ("\n\n%i files examined, %i converted\n", filestoprocess,
 filesprocessed);
 printf ("bye from parent \n");
 
+// cleanup
+free(hillary);
+free(string);
 
 return (r);
 }

@@ -22,11 +22,11 @@ const char *name = file + s->base;
 static char dupfile[5000];
 static char duppath[5000];
 //  printf("%*s", s->level * 4, "");    /* indent over */
-if ((s->level == 0)||(message==0)) // skip subdirs?
+if ((s->level < 2)||(message==0)) // skip subdirs?
 {
 if (flag == FTW_F)
     {
-if (validtype(name ,&type))
+if (validtype(name ,&type,0))
 {
 
 strcpy(filelist[filestoprocess++],file);

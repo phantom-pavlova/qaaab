@@ -33,8 +33,6 @@ int help=0;
 int version=0;
 int batch=0;
 char ar;
-//DIR *folder;
-//struct dirent *entry;
 char *comment;
 FILE *io;
 int use=1;
@@ -45,23 +43,22 @@ char *batchbase;
 char *batchname;
 char *tmpname1;
 char *tmpname2;
-//struct stat st; 
+char *kinput;
 
 
 time_t t;
-//m_wand = NULL;
 
 
 // allocate strings 
-comment=malloc(65535);
-newdir=malloc(65535);
-outfile=malloc(65535);
-dname=malloc(65535);
-oldname=malloc(65535);
-adddir=malloc(65535);
-batchdir=malloc(65535);
-batchbase=malloc(65535);
-type = malloc(10*sizeof(char));
+comment=malloc(BUFFER);
+newdir=malloc(BUFFER);
+outfile=malloc(BUFFER);
+dname=malloc(BUFFER);
+oldname=malloc(BUFFER);
+adddir=malloc(BUFFER);
+batchdir=malloc(BUFFER);
+batchbase=malloc(BUFFER);
+type = malloc(1024*sizeof(char));
 newdirflag=1;
 strcpy(oldname,"owlerror");
 // seed random number generator
@@ -117,7 +114,7 @@ else
 	if (batch)
 		printf("\nsimple batch using 1 CPU\n");
 	else
-		printf("\nusing %i CPUi(s)\n",cpus);
+		printf("\n%i CPU(s) available\n",cpus);
 
 	}
 
@@ -329,9 +326,13 @@ printf("4:y  auto    (option 1, size=1024, with subdirs, only use half of availa
 printf("5:y  auto    (option 1, size=1024, with subdirs)\n");
 printf("6:y  quit\n");
 printf(" \n");
-strcpy(comment,readline("choice?\n"));
+kinput=readline("choice?\n");
+strcpy(comment,kinput);
 while (((atoi(comment)<1)||(atoi(comment)>6))&&(comment[0]!='q'))
-	strcpy(comment,readline("choice?\n"));
+	{
+	kinput=readline("choice?\n");
+	strcpy(comment,kinput);
+	}
 //if((rand() % 10)>7) "that's not very polite, say please"
 if ((atoi(comment)==6)||(comment[0]=='q')||(comment[0]=='3'))
 	exit(0);
@@ -355,14 +356,19 @@ else
 choice=atoi(comment);
 printf("choice was %i\n",choice);
 printf("currently quality of written image is hard coded to 95%% - we may change that later...\n");
-strcpy(comment,readline("recurse into subdirectories(y/n)?\n"));
+kinput=readline("recurse into subdirectories(y/n)?\n");
+strcpy(comment,kinput);
 if((comment[0]=='y')||(comment[0]=='Y'))
 	choice |=8;
 
 printf("choice was %c, (%i)\n",comment[0],choice);
-strcpy(comment,readline("new size?\n"));
+kinput=readline("new size?\n");
+strcpy(comment,kinput);
 while (atoi(comment)==0)
-	strcpy(comment,readline("new size (number)?\n"));
+	{
+    kinput=readline("new size (number)?\n");
+    strcpy(comment,kinput);
+    }
 
 strcpy(newdir,comment);
 newsize=atoi(comment);
@@ -381,6 +387,7 @@ else
 	message=1;
 	}
 
+printf("\nusing %i CPU(s)\n",cpus);
 printf("using %s, %i %s\n",newdir,newsize,comment);
 //newsize *=1024; // idiot, NEVER use same variable for two different tasks!
 printf("hit a key to go or \"q\" to abort\n");
@@ -406,9 +413,9 @@ info.c_lflag |= ICANON;
 tcsetattr(0, TCSANOW, &info); 	/* put back old values */
 printf("\n");
 
+free(kinput);
 
 // nftw stuff now...
-
 
 
 //int c, nfds;
@@ -478,6 +485,23 @@ int j;
 core();
 
 printf("\n finished\n\n");
+
+//cleanup
+free(comment);
+free(newdir);
+free(outfile);
+free(dname);
+free(oldname);
+free(adddir);
+free(batchdir);
+free(batchbase);
+free(type);
+for (i=0;i<dirstomake;i++)
+	free(dirlist[i]);
+free(dirlist);
+for (i=0;i<filestoprocess;i++)
+	free(filelist[i]);
+free(filelist);
 
 
 

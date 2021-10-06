@@ -21,11 +21,11 @@ int retval = 0;
 const char *name = file + s->base;
 static char dupfile[5000];
 static char duppath[5000];
-if ((s->level == 0)||(message==0)) // skip subdirs?
+if ((s->level <2)||(message==0)) // skip subdirs?
 	{
 	if (flag == FTW_F)
 	    {
-		if (validtype(name ,&type))
+		if (validtype(name ,&type,0))
 			{
 			strcpy(dupfile,file);
 			if (strlen(dupfile)>linemax)

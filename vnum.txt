@@ -1,6 +1,6 @@
-# version before backup was was 16.0
+# version before backup was was 17.0
 # major number 
-17:x
-## major update to 17
-#ok ipc woorking better, most niggles removed, need to sort declarations, and minimise printfs
+18:x
+## major update to 18
+#mostly there, .cache and watermark...
 

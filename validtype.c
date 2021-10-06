@@ -6,7 +6,7 @@ if valid type found, returns length of extension (tiff=4, bmp=3, etc...)
 */
 
 #include "ourdefs.h"
-int validtype(const char *filename ,char **type){
+int validtype(const char *filename ,char **suffix, int changetype){
 // checks if extension is anpg, avif,gif, jpg, jpeg, png, webp, bmp, tif,tiff
 // case insensitive - jpeg = JpeG
 // returns length of extension if match fount else 0, **type 'returns' extension - type is never more than 4 characters
@@ -46,7 +46,9 @@ r=0;
 // there is a problem with r somewhere, should re-write this
 
 // copy srt to type - no more than 4 characters are needed so type can always be malloced to 4 (* sizeof (char))
-strcpy(*type, str);
+//   - valgrind begs to differ 
+if (changetype)
+	strcpy(*suffix, str);
 
 // now check for valid types
 
