@@ -1,0 +1,1 @@
+cd ~ ; rm -R Discord ; wget 'https://discord.com/api/download?platform=linux&format=tar.gz' -O d.tgz && tar zxvf d.tgz && rm d.tgz
