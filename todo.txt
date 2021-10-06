@@ -1,17 +1,9 @@
 
-- think about renicing.
-
-why do batch and auto treat .JPG differently to .jpg ?
-
-* do not increase filesizes (xxx.unaltered.jpg)?? -- too complicated?
-* estimated time remaining would be helpfull
-
-
--- < target size should be symbollic link?
-
-redo option 3 for +- 5% accuracy
 
 options 2 4 and 3
+
+write an empty .qaaab file in output dir, then remove from list everything in those directories
+
 
 watermark
  - you will need to add a staticly linked xforms window here 
@@ -24,18 +16,6 @@ mention download site in Readme for compiling
 use make static for distribution (needs fixing + testing)
 
 make explanation clearer
-
-parellise if > 1 CPU
- - dir with 3500 ~2M pix took 10 mins to stat!
-- some sort of cache will be very helpful
-- the thing to do is just use nftw to get list of valid image files
- - then create the subdirs
- - then make a list of infile/outfile pairs 
- - then start forking (limit mem + cpu maybe with cgroups maybe just limit CPUs 
-			+ check for swap action(/proc/meminfo - VmallocUsed:       41036 kB))
-
-more batch options (add subdir for all options)
-	nftw() - problematic if you write or mkdir 
 
 gtk+ interface?
 
@@ -87,5 +67,27 @@ a[0][2]=xx/800/yy.800.jpg
 a[1][0]=xx/yy.jpg
 
  then process  each.
+
+	nftw() - problematic if you write or mkdir 
+
+why do batch and auto treat .JPG differently to .jpg ?
+	-not sure but fixed anyway
+
+parellise if > 1 CPU
+ - dir with 3500 ~2M pix took 10 mins to stat!
+- some sort of cache will be very helpful
+- the thing to do is just use nftw to get list of valid image files
+ - then create the subdirs
+ - then make a list of infile/outfile pairs 
+ - then start forking (limit mem + cpu maybe with cgroups maybe just limit CPUs 
+			+ check for swap action(/proc/meminfo - VmallocUsed:       41036 kB))
+			-- actually ech child uses about 4% of memory, so we will skip that
+
+- think about renicing.
+
+
+* do not increase filesizes (xxx.unaltered.jpg)?? -- too complicated?
+* estimated time remaining would be helpfull
+	- actually used files done/ignored/total
 
 

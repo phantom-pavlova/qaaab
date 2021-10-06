@@ -322,27 +322,36 @@ printf("\n");
 //	exit(0);
 
 printf("choices:\n\n");
-printf("1:y  change max picture dimension (eg 800 px)\n");
-printf("2:  watermark\n");
-printf("3:  resize so each file is < X Kb\n");
-printf("4:  stat\n");
-printf("5:y  auto\n");
+printf("1:y  resize images that are too large\n");
+printf("2:y  resize all images even if that makes image bigger\n");
+printf("3:  \n");
+printf("4:y  auto    (option 1, size=1024, with subdirs, only use half of available CPUs\n");
+printf("5:y  auto    (option 1, size=1024, with subdirs)\n");
 printf("6:y  quit\n");
 printf(" \n");
 strcpy(comment,readline("choice?\n"));
 while (((atoi(comment)<1)||(atoi(comment)>6))&&(comment[0]!='q'))
 	strcpy(comment,readline("choice?\n"));
 //if((rand() % 10)>7) "that's not very polite, say please"
-if ((atoi(comment)==6)||(comment[0]=='q'))
+if ((atoi(comment)==6)||(comment[0]=='q')||(comment[0]=='3'))
 	exit(0);
-if (atoi(comment)==5)
+if ((atoi(comment)==5)||(atoi(comment)==4))
 {
 choice=5|8;
 newsize=1024;
 strcpy(newdir,"1024");
+if (atoi(comment)==4)
+	if (cpus>1) cpus=(cpus+1)/2;
+
 }
 else
 {
+
+if (atoi(comment)==2)
+	alwaysresize=1;
+else
+	alwaysresize=0;
+
 choice=atoi(comment);
 printf("choice was %i\n",choice);
 printf("currently quality of written image is hard coded to 95%% - we may change that later...\n");

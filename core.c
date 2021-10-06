@@ -31,8 +31,7 @@ int toparentfd[cpus][2];
 
 int height, width;
 int nheight, nwidth;
-FILE *checkpointer;
-MagickWand *magick_wand;
+//MagickWand *magick_wand;
 // locals declared ...
 
 //cpus = 1;
@@ -138,7 +137,7 @@ else if (pids[i] == 0)
 				
 				// is it bigger than newsize in at least 1 diection
 				justwrite=0;
-				if ((width < newsize) && (height < newsize))
+				if ((width < newsize) && (height < newsize)&& (alwaysresize==0))
 //					{
 //					printf (" image (%i x %i)less than %i - unchanged\n", width,height,newsize);
 					justwrite=1;
