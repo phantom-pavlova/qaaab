@@ -115,6 +115,10 @@ else if (pids[i] == 0)
 		if (strncmp (infile, "stop", 4) == 0)	// all done
 			{
 //			printf ("child %i has stopped\n", i);
+			MagickWandTerminus();
+			close(tochildfd[i][0]);
+			close(toparentfd[i][1]);
+			free(string);
 			exit (0);
 			}
 		// we have a filename, so
@@ -138,7 +142,7 @@ else if (pids[i] == 0)
 			string = strdup (infile);
 			strcat (outfile, basename (string));
 			string = strdup (infile);
-			outfile[strlen (outfile) - validtype (string, &hillary,1)] = 0;
+			outfile[strlen (outfile) - validtype (string, NULL, &hillary,1)] = 0;
 			strcat (outfile, newdir);
 			strcat (outfile, ".");
 			strcat (outfile, hillary);
@@ -289,6 +293,11 @@ printf ("bye from parent \n");
 // cleanup
 free(hillary);
 free(string);
+for (j = 0; j < cpus; j++)
+	{
+	close(tochildfd[j][1]);
+	close(toparentfd[j][0]);
+	}
 
 return (r);
 }

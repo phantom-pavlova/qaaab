@@ -1,7 +1,7 @@
 
 /*
 walkexamine.c
-goes through a subdir system noting number of image files, and subdirs to create.
+goes through a subdir system noting names of image files.
 walk nftw
 globals are:
 
@@ -17,32 +17,31 @@ char **dirlist;
 int walkexamine(const char *file, const struct stat *sb,
         int flag, struct FTW *s)
 {
-int retval = 0;
 const char *name = file + s->base;
-static char dupfile[5000];
-static char duppath[5000];
+static char dupfile[BUFFER];
+//static char duppath[BUFFER];
 if ((s->level <2)||(message==0)) // skip subdirs?
 	{
 	if (flag == FTW_F)
 	    {
-		if (validtype(name ,&type,0))
+		if (validtype(name, newdir, NULL , 2))
 			{
 			strcpy(dupfile,file);
 			if (strlen(dupfile)>linemax)
 			    linemax=strlen(dupfile);
 
-			strcpy(duppath,dirname(dupfile));
+//			strcpy(duppath,dirname(dupfile));
 			filestoprocess++;
 // this will catch all dirs, but sometimes twice
-			if (strcmp(duppath,oldname)!=0)
-				{
-				dirstomake++;
-				strcpy(oldname,duppath);
-				}
+//			if (strcmp(duppath,oldname)!=0)
+//				{
+//				dirstomake++;
+//				strcpy(oldname,duppath);
+//				}
 			}
 		}
 	}
-return retval;
+return (0);
 }
 
 

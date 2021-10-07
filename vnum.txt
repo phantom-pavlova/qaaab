@@ -1,6 +1,6 @@
-# version before backup was was 17.0
+# version before backup was was 19.0
 # major number 
-18:x
-## major update to 18
-#mostly there, .cache and watermark...
+20:x
+## major update to 20
+#fixed odd problem, root dir only reported when doing subdirs as well, some cleaning
 

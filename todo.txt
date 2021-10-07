@@ -1,5 +1,12 @@
 
-crop dir search
+watermark
+ - choose
+	text
+	size
+	opacity
+	pattern
+ - show result in windows, empty and with example pic
+
 
 write an empty .qaaab file in output dir, then remove from list everything in those directories
 
@@ -19,12 +26,6 @@ make explanation clearer
 gtk+ interface?
 
 make more rodent traps
-
-separate calls / rewrite more logically / remove commented out code
-move the for ... if ... chkn+=(2<<j); to 
-	int samesuffix(char*,char*)
-
-check -Wall warnings (only seen on make install)
 
 caca option
 
@@ -88,10 +89,22 @@ parellise if > 1 CPU
 	- actually used files done/ignored/total
 
 
+check -Wall warnings (only seen on make install)
+	- done periodically
+
 check free(), or use garbage collection
 
 close file descriptors in core.c
  - also a few nanosleeps 
 
+- close last fd's in core
+
+crop dir search
+
+move the for ... if ... chkn+=(2<<j); to 
+	int samesuffix(char*,char*)
+- sort of
+
+separate calls / rewrite more logically / remove commented out code
 
 

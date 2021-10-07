@@ -29,6 +29,9 @@ int main(int argc,char *argv[]){
 #include "vnum.c"
 int r=0;
 int i;
+int j;
+int flag;
+int chkn=0;
 int help=0;
 int version=0;
 int batch=0;
@@ -44,6 +47,7 @@ char *batchname;
 char *tmpname1;
 char *tmpname2;
 char *kinput;
+char *parsestring;
 
 
 time_t t;
@@ -58,14 +62,16 @@ oldname=malloc(BUFFER);
 adddir=malloc(BUFFER);
 batchdir=malloc(BUFFER);
 batchbase=malloc(BUFFER);
-type = malloc(1024*sizeof(char));
+type=malloc(BUFFER);
 newdirflag=1;
 strcpy(oldname,"owlerror");
 // seed random number generator
 srand((unsigned) time(&t));
 
+const char *match[2];
+match[0] = "no";
+match[1] = "yes";
 
-char *parsestring;
 
 nice(1); // do not completely block system
 
@@ -114,7 +120,7 @@ else
 	if (batch)
 		printf("\nsimple batch using 1 CPU\n");
 	else
-		printf("\n%i CPU(s) available\n",cpus);
+		printf("\n%i CPU(s) available\n",cpus+1);
 
 	}
 
@@ -306,6 +312,8 @@ printf("\n\nall done\n\n");
 if (files_exist)
     MagickWandTerminus();
 
+free(tmpname1);
+free(tmpname2);
 
 exit(0);
 }
@@ -319,12 +327,12 @@ printf("\n");
 //	exit(0);
 
 printf("choices:\n\n");
-printf("1:y  resize images that are too large\n");
-printf("2:y  resize all images even if that makes image bigger\n");
-printf("3:  \n");
-printf("4:y  auto    (option 1, size=1024, with subdirs, only use half of available CPUs\n");
-printf("5:y  auto    (option 1, size=1024, with subdirs)\n");
-printf("6:y  quit\n");
+printf("1\t%i CPUs\t:\tresize images that are too large\n",cpus);
+printf("2\t%i CPUs\t:\tresize all images even if that makes image bigger\n",cpus);
+printf("3\t\t:\t(watermark - not finished)\n");
+printf("4\t%i CPUs\t:\tauto    (option 1, size=1024, with subdirs, only use half of available CPUs)\n",(cpus+1)/2);
+printf("5\t%i CPUs\t:\tauto    (option 1, size=1024, with subdirs)\n",cpus);
+printf("6\t\t:\tquit\n");
 printf(" \n");
 kinput=readline("choice?\n");
 strcpy(comment,kinput);
@@ -438,12 +446,11 @@ if (nftw(dname, walkexamine, 15, flags) != 0)
         errors++;
         }
 printf("found %i image files\n",filestoprocess);
-printf("in %i directories,\n",dirstomake);
 // mallocing in nftw affects nftw's structures - go figure...
-printf("reserving memory (%i)(%i)......\n",dirstomake*4096,filestoprocess*(linemax+2));
-dirlist=malloc(dirstomake*sizeof(char *));
-for (i=0;i<dirstomake;i++)
-	dirlist[i]=malloc(4096*sizeof(char));
+printf("reserving memory (%i)......\n",filestoprocess*(linemax+2));
+//dirlist=malloc(dirstomake*sizeof(char *));
+//for (i=0;i<dirstomake;i++)
+//	dirlist[i]=malloc(4096*sizeof(char));
 filelist=malloc(filestoprocess*sizeof(char *));
 for (i=0;i<filestoprocess;i++)
 	filelist[i]=malloc((linemax+2)*sizeof(char));
@@ -459,12 +466,44 @@ if (nftw(dname, walkdir, 15, flags) != 0)
 printf("got names......\n");
 
 //printf("\n\ncreating new directories........\n");
+
+
+dirlist=malloc(sizeof(char*));
+
+// extract dirnames here
+if (filestoprocess>0)
+	for (i=0;i<filestoprocess;i++)
+	{
+	strcpy(oldname,filelist[i]);
+	strcpy(dname,dirname(oldname));
+	if (dirstomake > 0)
+		{
+		flag=1;
+		for (j=0;j<dirstomake;j++)
+			if (strcmp(dirlist[j],dname)==0) // already got it
+				flag=0;
+		}
+	else
+		flag=1;
+
+	if (flag)
+		{
+	//	printf("..%i-%s\n",dirstomake,dname);
+		dirstomake++;
+		dirlist=realloc(dirlist,(dirstomake+1)*sizeof(char*));
+		dirlist[dirstomake-1]=malloc(sizeof(char)*strlen(dname));
+		strcpy(dirlist[dirstomake-1],dname);
+		}
+}
+//printf("found %i directories,\n",dirstomake);
+
+
+
+
 for (i=0;i<dirstomake;i++)
 	{
 // if dirlist[i] already end with newdir, dont add it
-int chkn=0;
-int j;
-
+//printf ("looking at %s\n",dirlist[i]);
 	for (j=0;j<strlen(newdir);j++)
 		if (dirlist[i][strlen(dirlist[i])-j]==newdir[strlen(newdir)-j])
 			chkn+=(2<<j);
