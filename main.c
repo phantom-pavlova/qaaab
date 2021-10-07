@@ -93,44 +93,10 @@ if (argc >1){
 	}
 
 
-cpus=0;
-//processor	: 3
-if((io=fopen("/proc/cpuinfo","r"))==NULL)
-	{
-	printf("couldn't open /proc/cpuinfo\n");
-	exit(0);
-	}
-else
-	{
-	while ((fgets( comment, 1023,io) != NULL))
-		{
-		if (strncmp(comment,"processor",9)==0)
-			{
-			for (i=0;i<strlen(comment);i++)
-				if (comment[i]==':')
-					parsestring=comment+(i+1)*sizeof(char);
-	
-			cpus=atoi(parsestring);
-			}
-	
-		}
-	if (cpus==0) 
-		cpus=1;
-	
-	if (batch)
-		printf("\nsimple batch using 1 CPU\n");
-	else
-		printf("\n%i CPU(s) available\n",cpus+1);
-
-	}
-
-
-
-
 if (version){
 	printf("\n%s %.2f\n",vname,((float)vmaj)/100);
 	printf("latest version from should be on github\n\n");
-	printf("git clone https://github.com/phantom-pavlova/qaaab.git\n\n");
+	printf("git clone https://github.com/phantom-pavlova/qaaab.git ; cd qaaab ; make install\n\n");
 	exit(r);
 	}
 
@@ -158,6 +124,41 @@ if (help){
 
 exit(0);
 }
+
+
+cpus=0;
+//processor	: 3
+if((io=fopen("/proc/cpuinfo","r"))==NULL)
+	{
+	printf("couldn't open /proc/cpuinfo\n");
+	cpus=1;
+	}
+else
+	{
+	while ((fgets( comment, 1023,io) != NULL))
+		{
+		if (strncmp(comment,"processor",9)==0)
+			{
+			for (i=0;i<strlen(comment);i++)
+				if (comment[i]==':')
+					parsestring=comment+(i+1)*sizeof(char);
+	
+			cpus=atoi(parsestring);
+			}
+	
+		}
+	if (cpus==0) 
+		cpus=1;
+
+	{
+	if (batch)
+		printf("\nsimple batch using 1 CPU\n");
+	else
+		printf("\n%i CPU(s) available\n",cpus+1);
+
+	}
+	}
+
 
 
 if (batch)
@@ -312,8 +313,6 @@ printf("\n\nall done\n\n");
 if (files_exist)
     MagickWandTerminus();
 
-free(tmpname1);
-free(tmpname2);
 
 exit(0);
 }
